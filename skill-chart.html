@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Skills Radar Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      max-width: 100%;
+      max-height: 100vh;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="skillsChart" width="500" height="500"></canvas>
+  <script>
+    const data = {
+      labels: [
+        "Responsible AI",
+        "AI Roadmapping",
+        "Product Roadmapping",
+        "LLM Integration",
+        "Automation Engineering",
+        "Product Proposal & Consulting",
+        "UX & Visual Design",
+        "Business & Data Analytics",
+        "Client Engagement & Pitching",
+        "Technical & Business Writing",
+        "Product Management",
+        "Product Strategy",
+        "Creative Photography",
+        "Data-Driven Decision Making"
+      ],
+      datasets: [{
+        label: 'My Skills',
+        data: [1,2,3,1,2,3,2,3,2,3,2,3,2,3],
+        fill: true,
+        backgroundColor: 'rgba(25, 118, 210, 0.2)', // Material Blue 700
+        borderColor: '#1976D2',
+        pointBackgroundColor: '#1976D2',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: '#1976D2'
+      }]
+    };
+
+    const config = {
+      type: 'radar',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }},
+        scales: {
+          r: {
+            min: 0,
+            max: 3,
+            ticks: {
+              stepSize: 1,
+              callback: value => ["", "Learning", "Practicing", "I Can Teach You"][value],
+              color: "#444"
+            },
+            grid: { color: "#eee" },
+            angleLines: { color: "#ddd" },
+            pointLabels: {
+              font: { size: 13 },
+              color: "#333"
+            }
+          }
+        }
+      }
+    };
+
+    new Chart(document.getElementById('skillsChart'), config);
+  </script>
+</body>
+</html>
