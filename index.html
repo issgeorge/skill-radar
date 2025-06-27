@@ -1,126 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Skill Radar Chart</title>
+  <meta charset="UTF-8" />
+  <title>My Skills Radar Chart</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
     }
-    canvas {
-      max-width: 95vw;
-      max-height: 80vh;
+
+    #skillsChart {
+      max-width: 800px;
+      max-height: 100vh;
+      margin: 40px auto;
+      display: block;
     }
-    .legend {
-      margin-top: 20px;
+
+    .legend-container {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
       justify-content: center;
+      gap: 20px;
+      font-size: 16px;
+      padding-bottom: 20px;
+      flex-wrap: wrap;
     }
+
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
+      gap: 6px;
     }
+
     .legend-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      display: inline-block;
     }
   </style>
 </head>
 <body>
   <canvas id="skillsChart"></canvas>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-color" style="background-color:#1E88E5;"></div> Tech</div>
-    <div class="legend-item"><div class="legend-color" style="background-color:#FDD835;"></div> Business</div>
-    <div class="legend-item"><div class="legend-color" style="background-color:#43A047;"></div> Design</div>
-    <div class="legend-item"><div class="legend-color" style="background-color:#E53935;"></div> Arts</div>
+
+  <div class="legend-container">
+    <div class="legend-item"><span class="legend-color" style="background-color: #1976D2;"></span> Tech</div>
+    <div class="legend-item"><span class="legend-color" style="background-color: #FBC02D;"></span> Business</div>
+    <div class="legend-item"><span class="legend-color" style="background-color: #388E3C;"></span> Design</div>
+    <div class="legend-item"><span class="legend-color" style="background-color: #E53935;"></span> Arts</div>
   </div>
 
   <script>
-    const skillLabels = [
-      "LLM Integration",
-      "Responsible AI",
-      "AI Roadmapping",
-      "System Design",
-      "Automation Engineering",
-      "Technical Writing",
-      "Product Roadmapping",
-      "Data-Driven Decision Making",
-      "Product Proposal & Consulting",
-      "Business & Data Analytics",
-      "Pitching & Presentation",
-      "Go-to-Market Strategy",
-      "UX & Visual Design",
-      "Wireframing",
-      "HCI & AI",
-      "Creative Photography",
-      "Creative Writing"
-    ];
-
-    const skillLevels = [
-      1, // LLM Integration
-      1, // Responsible AI
-      2, // AI Roadmapping
-      2, // System Design
-      2, // Automation Engineering
-      3, // Technical Writing
-      3, // Product Roadmapping
-      3, // Data-Driven Decision Making
-      3, // Product Proposal & Consulting
-      3, // Business & Data Analytics
-      2, // Pitching & Presentation
-      2, // Go-to-Market Strategy
-      2, // UX & Visual Design
-      2, // Wireframing
-      1, // HCI & AI
-      2, // Creative Photography
-      2  // Creative Writing
-    ];
-
-    const skillColors = [
-      '#1E88E5', // Tech
-      '#1E88E5',
-      '#1E88E5',
-      '#1E88E5',
-      '#1E88E5',
-      '#1E88E5',
-      '#1E88E5',
-      '#1E88E5',
-      '#FDD835', // Business
-      '#FDD835',
-      '#FDD835',
-      '#FDD835',
-      '#43A047', // Design
-      '#43A047',
-      '#43A047',
-      '#E53935', // Arts
-      '#E53935'
-    ];
-
-    const backgroundColor = skillColors.map(c => c + '33');
-
     const data = {
-      labels: skillLabels,
+      labels: [
+        "LLM Integration",
+        "Responsible AI",
+        "AI Roadmapping",
+        "System Design",
+        "Product Roadmapping",
+        "Automation Engineering",
+        "Data-Driven Decision Making",
+        "Technical Writing",
+        "Wireframing",
+        "HCI & AI",
+        "UX & Visual Design",
+        "Go-to-Market Strategy",
+        "Pitching & Presentation",
+        "Creative Photography",
+        "Creative Writing"
+      ],
       datasets: [{
-        label: 'Skill Level',
-        data: skillLevels,
-        backgroundColor: 'rgba(30, 136, 229, 0.15)',
-        borderColor: '#1E88E5',
-        pointBackgroundColor: skillColors,
+        label: 'Skill Levels',
+        data: [
+          1, // LLM Integration
+          1, // Responsible AI
+          2, // AI Roadmapping
+          2, // System Design
+          3, // Product Roadmapping
+          2, // Automation Engineering
+          3, // Data-Driven Decision Making
+          3, // Technical Writing
+          2, // Wireframing
+          1, // HCI & AI
+          2, // UX & Visual Design
+          2, // Go-to-Market Strategy
+          2, // Pitching & Presentation
+          2, // Creative Photography
+          2  // Creative Writing
+        ],
+        backgroundColor: 'rgba(25, 118, 210, 0.1)',
+        borderColor: '#1976D2',
+        pointBackgroundColor: '#1976D2',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: skillColors
+        pointHoverBorderColor: '#1976D2',
+        fill: true
       }]
     };
 
@@ -129,9 +105,10 @@
       data: data,
       options: {
         responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
+        animation: {
+          duration: 50,
+          easing: 'easeInOutQuart',
+          delay: (context) => context.dataIndex * 30
         },
         scales: {
           r: {
@@ -139,22 +116,27 @@
             max: 3,
             ticks: {
               stepSize: 1,
-              callback: (value) => ['', 'Learning', 'Practicing', 'I Can Teach You'][value],
-              color: '#555',
-              font: { size: 12 }
+              callback: value => ["", "Learning", "Practicing", "I Can Teach You"][value],
+              color: "#444"
             },
+            grid: { color: "#eee" },
+            angleLines: { color: "#ddd" },
             pointLabels: {
-              font: { size: 13 },
-              color: '#333'
-            },
-            grid: { color: '#eee' },
-            angleLines: { color: '#ccc' }
+              font: { size: 14 },
+              color: "#222"
+            }
           }
+        },
+        plugins: {
+          legend: { display: false }
         }
       }
     };
 
-    new Chart(document.getElementById('skillsChart'), config);
+    new Chart(
+      document.getElementById('skillsChart'),
+      config
+    );
   </script>
 </body>
 </html>
