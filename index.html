@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <title>My Skills Radar Chart</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
       background: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     #skillsChart {
-      max-width: 800px;
-      max-height: 100vh;
+      max-width: 900px;
       margin: 40px auto;
       display: block;
+      padding: 20px;
     }
 
     .legend-container {
@@ -26,6 +27,7 @@
       font-size: 16px;
       padding-bottom: 20px;
       flex-wrap: wrap;
+      font-family: 'Poppins', sans-serif;
     }
 
     .legend-item {
@@ -53,49 +55,48 @@
   </div>
 
   <script>
+    const labels = [
+      "LLM Integration",           // Tech
+      "Responsible AI",           // Tech
+      "AI Roadmapping",           // Business
+      "System Design",            // Tech
+      "Product Roadmapping",      // Business
+      "Automation Engineering",   // Tech
+      "Data-Driven Decision Making", // Business
+      "Technical Writing",        // Business
+      "Wireframing",              // Design
+      "HCI & AI",                 // Design
+      "UX & Visual Design",       // Design
+      "GTM Strategy",             // Business
+      "Pitching & Presentation",  // Business
+      "Creative Photography",     // Arts
+      "Creative Writing"          // Arts
+    ];
+
+    const skillLevels = [
+      1, 1, 2, 2, 3,
+      2, 3, 3, 2, 1,
+      2, 2, 2, 2, 2
+    ];
+
+    const backgroundColors = [
+      "#1976D2", "#1976D2", "#FBC02D", "#1976D2", "#FBC02D",
+      "#1976D2", "#FBC02D", "#FBC02D", "#388E3C", "#388E3C",
+      "#388E3C", "#FBC02D", "#FBC02D", "#E53935", "#E53935"
+    ];
+
     const data = {
-      labels: [
-        "LLM Integration",
-        "Responsible AI",
-        "AI Roadmapping",
-        "System Design",
-        "Product Roadmapping",
-        "Automation Engineering",
-        "Data-Driven Decision Making",
-        "Technical Writing",
-        "Wireframing",
-        "HCI & AI",
-        "UX & Visual Design",
-        "GTM Strategy",
-        "Pitching & Presentation",
-        "Creative Photography",
-        "Creative Writing"
-      ],
+      labels: labels,
       datasets: [{
         label: 'Skill Levels',
-        data: [
-          1, // LLM Integration
-          1, // Responsible AI
-          2, // AI Roadmapping
-          2, // System Design
-          3, // Product Roadmapping
-          2, // Automation Engineering
-          3, // Data-Driven Decision Making
-          3, // Technical Writing
-          2, // Wireframing
-          1, // HCI & AI
-          2, // UX & Visual Design
-          2, // GTM Strategy
-          2, // Pitching & Presentation
-          2, // Creative Photography
-          2  // Creative Writing
-        ],
-        backgroundColor: 'rgba(25, 118, 210, 0.1)',
-        borderColor: '#1976D2',
-        pointBackgroundColor: '#1976D2',
+        data: skillLevels,
+        backgroundColor: 'rgba(25, 118, 210, 0.08)',
+        borderColor: '#000',
+        borderWidth: 1,
+        pointBackgroundColor: backgroundColors,
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: '#1976D2',
+        pointHoverBorderColor: backgroundColors,
         fill: true
       }]
     };
@@ -105,10 +106,13 @@
       data: data,
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: 20
+        },
         animation: {
-          duration: 50,
-          easing: 'easeInOutQuart',
-          delay: (context) => context.dataIndex * 30
+          duration: 150,
+          delay: (context) => context.dataIndex * 50,
         },
         scales: {
           r: {
@@ -117,12 +121,18 @@
             ticks: {
               stepSize: 1,
               callback: value => ["", "Learning", "Practicing", "I Can Teach You"][value],
-              color: "#444"
+              color: "#444",
+              font: {
+                family: 'Poppins'
+              }
             },
             grid: { color: "#eee" },
             angleLines: { color: "#ddd" },
             pointLabels: {
-              font: { size: 14 },
+              font: {
+                size: 14,
+                family: 'Poppins'
+              },
               color: "#222"
             }
           }
@@ -133,10 +143,7 @@
       }
     };
 
-    new Chart(
-      document.getElementById('skillsChart'),
-      config
-    );
+    new Chart(document.getElementById('skillsChart'), config);
   </script>
 </body>
 </html>
