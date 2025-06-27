@@ -3,53 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <title>My Skills Radar Chart</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  https://cdn.jsdelivr.net/npm/chart.js
   <style>
     html, body {
       margin: 0;
       padding: 0;
       background: #ffffff;
       font-family: Arial, sans-serif;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #chart-container {
+      width: 90vw;
+      height: 90vh;
+      padding: 40px;
+      box-sizing: border-box;
     }
     canvas {
-      max-width: 100%;
-      max-height: 100vh;
-      margin: 0 auto;
-      display: block;
+      width: 100% !important;
+      height: 100% !important;
     }
   </style>
 </head>
 <body>
-  <canvas id="skillsChart" width="500" height="500"></canvas>
+  <div id="chart-container">
+    <canvas id="skillsChart"></canvas>
+  </div>
   <script>
+    const labels = [
+      "Responsible AI",
+      "AI Roadmapping",
+      "Product Roadmapping",
+      "LLM Integration",
+      "Automation Engineering",
+      "Product Proposal & Consulting",
+      "UX & Visual Design",
+      "Business & Data Analytics",
+      "Client Engagement & Pitching",
+      "Technical & Business Writing",
+      "Product Management",
+      "Product Strategy",
+      "Creative Photography",
+      "Data-Driven Decision Making"
+    ];
+
     const data = {
-      labels: [
-        "Responsible AI",
-        "AI Roadmapping",
-        "Product Roadmapping",
-        "LLM Integration",
-        "Automation Engineering",
-        "Product Proposal & Consulting",
-        "UX & Visual Design",
-        "Business & Data Analytics",
-        "Client Engagement & Pitching",
-        "Technical & Business Writing",
-        "Product Management",
-        "Product Strategy",
-        "Creative Photography",
-        "Data-Driven Decision Making"
-      ],
-      datasets: [{
-        label: 'My Skills',
-        data: [1,2,3,1,2,3,2,3,2,3,2,3,2,3],
-        fill: true,
-        backgroundColor: 'rgba(25, 118, 210, 0.2)', // Material Blue 700
-        borderColor: '#1976D2',
-        pointBackgroundColor: '#1976D2',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: '#1976D2'
-      }]
+      labels: labels,
+      datasets: [
+        {
+          label: 'Tech Skills',
+          data: [1, 2, 0, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          backgroundColor: 'rgba(25, 118, 210, 0.2)',
+          borderColor: '#1976D2',
+          pointBackgroundColor: '#1976D2'
+        },
+        {
+          label: 'Design Skills',
+          data: [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0],
+          backgroundColor: 'rgba(76, 175, 80, 0.2)',
+          borderColor: '#4CAF50',
+          pointBackgroundColor: '#4CAF50'
+        },
+        {
+          label: 'Business Skills',
+          data: [0, 0, 3, 0, 0, 3, 0, 3, 2, 3, 2, 3, 0, 3],
+          backgroundColor: 'rgba(255, 152, 0, 0.2)',
+          borderColor: '#FF9800',
+          pointBackgroundColor: '#FF9800'
+        }
+      ]
     };
 
     const config = {
@@ -57,7 +81,15 @@
       data: data,
       options: {
         responsive: true,
-        plugins: { legend: { display: false }},
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top'
+          }
+        },
+        layout: {
+          padding: 20
+        },
         scales: {
           r: {
             min: 0,
