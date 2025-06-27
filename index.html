@@ -2,78 +2,126 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Skills Radar Chart</title>
-  https://cdn.jsdelivr.net/npm/chart.js
+  <title>Skill Radar Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #ffffff;
       font-family: Arial, sans-serif;
-      height: 100%;
+      background-color: #fff;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
     }
-    #chart-container {
-      width: 90vw;
-      height: 90vh;
-      padding: 40px;
-      box-sizing: border-box;
-    }
     canvas {
-      width: 100% !important;
-      height: 100% !important;
+      max-width: 95vw;
+      max-height: 80vh;
+    }
+    .legend {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
     }
   </style>
 </head>
 <body>
-  <div id="chart-container">
-    <canvas id="skillsChart"></canvas>
+  <canvas id="skillsChart"></canvas>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-color" style="background-color:#1E88E5;"></div> Tech</div>
+    <div class="legend-item"><div class="legend-color" style="background-color:#FDD835;"></div> Business</div>
+    <div class="legend-item"><div class="legend-color" style="background-color:#43A047;"></div> Design</div>
+    <div class="legend-item"><div class="legend-color" style="background-color:#E53935;"></div> Arts</div>
   </div>
+
   <script>
-    const labels = [
+    const skillLabels = [
+      "LLM Integration",
       "Responsible AI",
       "AI Roadmapping",
-      "Product Roadmapping",
-      "LLM Integration",
+      "System Design",
       "Automation Engineering",
+      "Technical Writing",
+      "Product Roadmapping",
+      "Data-Driven Decision Making",
       "Product Proposal & Consulting",
-      "UX & Visual Design",
       "Business & Data Analytics",
-      "Client Engagement & Pitching",
-      "Technical & Business Writing",
-      "Product Management",
-      "Product Strategy",
+      "Pitching & Presentation",
+      "Go-to-Market Strategy",
+      "UX & Visual Design",
+      "Wireframing",
+      "HCI & AI",
       "Creative Photography",
-      "Data-Driven Decision Making"
+      "Creative Writing"
     ];
 
+    const skillLevels = [
+      1, // LLM Integration
+      1, // Responsible AI
+      2, // AI Roadmapping
+      2, // System Design
+      2, // Automation Engineering
+      3, // Technical Writing
+      3, // Product Roadmapping
+      3, // Data-Driven Decision Making
+      3, // Product Proposal & Consulting
+      3, // Business & Data Analytics
+      2, // Pitching & Presentation
+      2, // Go-to-Market Strategy
+      2, // UX & Visual Design
+      2, // Wireframing
+      1, // HCI & AI
+      2, // Creative Photography
+      2  // Creative Writing
+    ];
+
+    const skillColors = [
+      '#1E88E5', // Tech
+      '#1E88E5',
+      '#1E88E5',
+      '#1E88E5',
+      '#1E88E5',
+      '#1E88E5',
+      '#1E88E5',
+      '#1E88E5',
+      '#FDD835', // Business
+      '#FDD835',
+      '#FDD835',
+      '#FDD835',
+      '#43A047', // Design
+      '#43A047',
+      '#43A047',
+      '#E53935', // Arts
+      '#E53935'
+    ];
+
+    const backgroundColor = skillColors.map(c => c + '33');
+
     const data = {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Tech Skills',
-          data: [1, 2, 0, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(25, 118, 210, 0.2)',
-          borderColor: '#1976D2',
-          pointBackgroundColor: '#1976D2'
-        },
-        {
-          label: 'Design Skills',
-          data: [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0],
-          backgroundColor: 'rgba(76, 175, 80, 0.2)',
-          borderColor: '#4CAF50',
-          pointBackgroundColor: '#4CAF50'
-        },
-        {
-          label: 'Business Skills',
-          data: [0, 0, 3, 0, 0, 3, 0, 3, 2, 3, 2, 3, 0, 3],
-          backgroundColor: 'rgba(255, 152, 0, 0.2)',
-          borderColor: '#FF9800',
-          pointBackgroundColor: '#FF9800'
-        }
-      ]
+      labels: skillLabels,
+      datasets: [{
+        label: 'Skill Level',
+        data: skillLevels,
+        backgroundColor: 'rgba(30, 136, 229, 0.15)',
+        borderColor: '#1E88E5',
+        pointBackgroundColor: skillColors,
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: skillColors
+      }]
     };
 
     const config = {
@@ -83,12 +131,7 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            position: 'top'
-          }
-        },
-        layout: {
-          padding: 20
+          legend: { display: false }
         },
         scales: {
           r: {
@@ -96,15 +139,16 @@
             max: 3,
             ticks: {
               stepSize: 1,
-              callback: value => ["", "Learning", "Practicing", "I Can Teach You"][value],
-              color: "#444"
+              callback: (value) => ['', 'Learning', 'Practicing', 'I Can Teach You'][value],
+              color: '#555',
+              font: { size: 12 }
             },
-            grid: { color: "#eee" },
-            angleLines: { color: "#ddd" },
             pointLabels: {
               font: { size: 13 },
-              color: "#333"
-            }
+              color: '#333'
+            },
+            grid: { color: '#eee' },
+            angleLines: { color: '#ccc' }
           }
         }
       }
