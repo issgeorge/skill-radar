@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>My Skills Radar Chart</title>
+  <meta charset="UTF-8">
+  <title>Radar Skills Chart</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background: #ffffff;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Playfair Display', serif;
+      background-color: #fff;
+      color: #222;
     }
 
-    #skillsChart {
+    #container {
       max-width: 900px;
-      margin: 40px auto;
-      display: block;
-      padding: 20px;
+      margin: 80px auto;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 1 / 1;
     }
 
     .legend-container {
       display: flex;
       justify-content: center;
       gap: 20px;
+      margin-top: 30px;
       font-size: 16px;
-      padding-bottom: 20px;
       flex-wrap: wrap;
       font-family: 'Poppins', sans-serif;
+      color: #444;
     }
 
     .legend-item {
@@ -42,77 +49,119 @@
       border-radius: 3px;
       display: inline-block;
     }
+
+    .circle-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Poppins', sans-serif;
+      color: #555;
+      font-size: 13px;
+      pointer-events: none;
+      white-space: nowrap;
+      opacity: 0.8;
+    }
+
+    .pulse {
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1) translate(-50%, -50%); }
+      50% { transform: scale(1.1) translate(-50%, -50%); }
+      100% { transform: scale(1) translate(-50%, -50%); }
+    }
   </style>
 </head>
 <body>
-  <canvas id="skillsChart"></canvas>
-
-  <div class="legend-container">
-    <div class="legend-item"><span class="legend-color" style="background-color: #1976D2;"></span> Tech</div>
-    <div class="legend-item"><span class="legend-color" style="background-color: #FBC02D;"></span> Business</div>
-    <div class="legend-item"><span class="legend-color" style="background-color: #388E3C;"></span> Design</div>
-    <div class="legend-item"><span class="legend-color" style="background-color: #E53935;"></span> Arts</div>
+  <div id="container">
+    <canvas id="skillsChart"></canvas>
+    <div class="circle-label" id="label-learning">Learning</div>
+    <div class="circle-label" id="label-practicing">Practicing</div>
+    <div class="circle-label pulse" id="label-teach">I Can Teach You</div>
+    <div class="legend-container">
+      <div class="legend-item"><span class="legend-color" style="background-color: #1976D2;"></span> Tech</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #FBC02D;"></span> Business</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #388E3C;"></span> Design</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #E53935;"></span> Arts</div>
+    </div>
   </div>
 
   <script>
-    const labels = [
-      "LLM Integration",           // Tech
-      "Responsible AI",           // Tech
-      "AI Roadmapping",           // Business
-      "System Design",            // Tech
-      "Product Roadmapping",      // Business
-      "Automation Engineering",   // Tech
-      "Data-Driven Decision Making", // Business
-      "Technical Writing",        // Business
-      "Wireframing",              // Design
-      "HCI & AI",                 // Design
-      "UX & Visual Design",       // Design
-      "GTM Strategy",             // Business
-      "Pitching & Presentation",  // Business
-      "Creative Photography",     // Arts
-      "Creative Writing"          // Arts
-    ];
+    const categoryColors = {
+      Tech: "#1976D2",
+      Business: "#FBC02D",
+      Design: "#388E3C",
+      Arts: "#E53935"
+    };
 
-    const skillLevels = [
-      1, 1, 2, 2, 3,
-      2, 3, 3, 2, 1,
-      2, 2, 2, 2, 2
-    ];
+    const skillsByCategory = {
+      Tech: [
+        { label: "LLM Integration", level: 1 },
+        { label: "Responsible AI", level: 1 },
+        { label: "System Design", level: 2 },
+        { label: "Automation Engineering", level: 2 },
+        { label: "Technical Writing", level: 3 },
+        { label: "Data Analytics", level: 2 }
+      ],
+      Business: [
+        { label: "AI Roadmapping", level: 2 },
+        { label: "Product Roadmapping", level: 3 },
+        { label: "Data-Driven Decision Making", level: 3 },
+        { label: "GTM Strategy", level: 2 },
+        { label: "Pitching & Presentation", level: 2 }
+      ],
+      Design: [
+        { label: "Wireframing", level: 2 },
+        { label: "HCI & AI", level: 1 },
+        { label: "UX & Visual Design", level: 2 }
+      ],
+      Arts: [
+        { label: "Creative Photography", level: 2 },
+        { label: "Creative Writing", level: 2 }
+      ]
+    };
 
-    const backgroundColors = [
-      "#1976D2", "#1976D2", "#FBC02D", "#1976D2", "#FBC02D",
-      "#1976D2", "#FBC02D", "#FBC02D", "#388E3C", "#388E3C",
-      "#388E3C", "#FBC02D", "#FBC02D", "#E53935", "#E53935"
-    ];
+    const datasets = Object.entries(skillsByCategory).map(([category, skills]) => {
+      const labels = Object.values(skillsByCategory).flat().map(s => s.label);
+      const data = labels.map(label => {
+        const skill = skills.find(s => s.label === label);
+        return skill ? skill.level : 0;
+      });
 
-    const data = {
-      labels: labels,
-      datasets: [{
-        label: 'Skill Levels',
-        data: skillLevels,
-        backgroundColor: 'rgba(25, 118, 210, 0.08)',
-        borderColor: '#000',
-        borderWidth: 1,
-        pointBackgroundColor: backgroundColors,
+      return {
+        label: category,
+        data,
+        backgroundColor: Chart.helpers.color(categoryColors[category]).alpha(0.2).rgbString(),
+        borderColor: categoryColors[category],
+        borderWidth: 2,
+        pointBackgroundColor: categoryColors[category],
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: backgroundColors,
+        pointHoverBorderColor: categoryColors[category],
         fill: true
-      }]
-    };
+      };
+    });
+
+    const allLabels = Object.values(skillsByCategory).flat().map(s => s.label);
 
     const config = {
       type: 'radar',
-      data: data,
+      data: {
+        labels: allLabels,
+        datasets
+      },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: 20
-        },
-        animation: {
-          duration: 150,
-          delay: (context) => context.dataIndex * 50,
+        animations: {
+          radius: {
+            type: 'number',
+            easing: 'easeInOutSine',
+            duration: 3000,
+            from: 0,
+            delay: ctx => ctx.datasetIndex * 1000 + ctx.dataIndex * 120
+          }
         },
         scales: {
           r: {
@@ -120,30 +169,55 @@
             max: 3,
             ticks: {
               stepSize: 1,
-              callback: value => ["", "Learning", "Practicing", "I Can Teach You"][value],
-              color: "#444",
+              callback: () => '',
+              color: '#666',
               font: {
-                family: 'Poppins'
+                family: 'Poppins',
+                size: 13
               }
             },
             grid: { color: "#eee" },
             angleLines: { color: "#ddd" },
             pointLabels: {
               font: {
-                size: 14,
+                size: 11,
                 family: 'Poppins'
               },
-              color: "#222"
+              color: "#333"
             }
           }
         },
         plugins: {
-          legend: { display: false }
+          legend: {
+            display: false
+          }
         }
       }
     };
 
-    new Chart(document.getElementById('skillsChart'), config);
+    new Chart(document.getElementById("skillsChart"), config);
+
+    const labelLearning = document.getElementById("label-learning");
+    const labelPracticing = document.getElementById("label-practicing");
+    const labelTeach = document.getElementById("label-teach");
+
+    function animateLabel(label, radius, speed) {
+      let angle = 0;
+      function rotate() {
+        angle = (angle + speed) % 360;
+        const rad = angle * Math.PI / 180;
+        const x = 50 + radius * Math.cos(rad);
+        const y = 50 + radius * Math.sin(rad);
+        label.style.left = x + '%';
+        label.style.top = y + '%';
+        requestAnimationFrame(rotate);
+      }
+      rotate();
+    }
+
+    animateLabel(labelLearning, 12, 0.1);
+    animateLabel(labelPracticing, 18, 0.2);
+    animateLabel(labelTeach, 25, 0.4);
   </script>
 </body>
 </html>
